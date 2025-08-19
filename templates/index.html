@@ -1,0 +1,81 @@
+<body>
+    <h1>🎳 Bowling Score</h1>
+    <form id="scoreForm">
+        <div id="frames">
+            <!-- Generate 10 frames, each with inputs -->
+            <div>
+                <label>Frame 1: </label>
+                <input type="number" min="0" max="10">
+                <input type="number" min="0" max="10">
+            </div>
+            <div>
+                <label>Frame 2: </label>
+                <input type="number" min="0" max="10">
+                <input type="number" min="0" max="10">
+            </div>
+            <div>
+                <label>Frame 3: </label>
+                <input type="number" min="0" max="10">
+                <input type="number" min="0" max="10">
+            </div>
+            <div>
+                <label>Frame 4: </label>
+                <input type="number" min="0" max="10">
+                <input type="number" min="0" max="10">
+            </div>
+            <div>
+                <label>Frame 5: </label>
+                <input type="number" min="0" max="10">
+                <input type="number" min="0" max="10">
+            </div>
+            <div>
+                <label>Frame 6: </label>
+                <input type="number" min="0" max="10">
+                <input type="number" min="0" max="10">
+            </div>
+            <div>
+                <label>Frame 7: </label>
+                <input type="number" min="0" max="10">
+                <input type="number" min="0" max="10">
+            </div>
+            <div>
+                <label>Frame 8: </label>
+                <input type="number" min="0" max="10">
+                <input type="number" min="0" max="10">
+            </div>
+            <div>
+                <label>Frame 9: </label>
+                <input type="number" min="0" max="10">
+                <input type="number" min="0" max="10">
+            </div>
+            <div>
+                <label>Frame 10: </label>
+                <input type="number" min="0" max="10">
+                <input type="number" min="0" max="10">
+                <input type="number" min="0" max="10">
+            </div>
+        </div>
+        <button type="submit">Calculate</button>
+    </form>
+
+    <p id="result"></p>
+
+    <script>
+        document.getElementById("scoreForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const rolls = [];
+            document.querySelectorAll("#frames input").forEach(inp => {
+                if (inp.value !== "") rolls.push(parseInt(inp.value, 10));
+            });
+
+            const res = await fetch("/score", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ rolls })
+            });
+            const data = await res.json();
+            const out = document.getElementById("result");
+            out.textContent = data.error ? `Error: ${data.error}` : `Total Score: ${data.total}`;
+        });
+    </script>
+</body>
