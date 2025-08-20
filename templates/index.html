@@ -1,81 +1,130 @@
-<body>
-    <h1>🎳 Bowling Score</h1>
-    <form id="scoreForm">
-        <div id="frames">
-            <!-- Generate 10 frames, each with inputs -->
-            <div>
-                <label>Frame 1: </label>
-                <input type="number" min="0" max="10">
-                <input type="number" min="0" max="10">
-            </div>
-            <div>
-                <label>Frame 2: </label>
-                <input type="number" min="0" max="10">
-                <input type="number" min="0" max="10">
-            </div>
-            <div>
-                <label>Frame 3: </label>
-                <input type="number" min="0" max="10">
-                <input type="number" min="0" max="10">
-            </div>
-            <div>
-                <label>Frame 4: </label>
-                <input type="number" min="0" max="10">
-                <input type="number" min="0" max="10">
-            </div>
-            <div>
-                <label>Frame 5: </label>
-                <input type="number" min="0" max="10">
-                <input type="number" min="0" max="10">
-            </div>
-            <div>
-                <label>Frame 6: </label>
-                <input type="number" min="0" max="10">
-                <input type="number" min="0" max="10">
-            </div>
-            <div>
-                <label>Frame 7: </label>
-                <input type="number" min="0" max="10">
-                <input type="number" min="0" max="10">
-            </div>
-            <div>
-                <label>Frame 8: </label>
-                <input type="number" min="0" max="10">
-                <input type="number" min="0" max="10">
-            </div>
-            <div>
-                <label>Frame 9: </label>
-                <input type="number" min="0" max="10">
-                <input type="number" min="0" max="10">
-            </div>
-            <div>
-                <label>Frame 10: </label>
-                <input type="number" min="0" max="10">
-                <input type="number" min="0" max="10">
-                <input type="number" min="0" max="10">
-            </div>
-        </div>
-        <button type="submit">Calculate</button>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>🎳Bowling Score Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center">
+    <h1 class="text-3xl font-bold mb-6">🎳 Bowling Score Calculator</h1>
+
+    <!-- Frames Grid -->
+    <form id="scoreForm" class="grid grid-cols-10 gap-4 mb-6">
+        <!-- Frame boxes will be inserted here -->
     </form>
 
-    <p id="result"></p>
+    <button id="calculateBtn" class="px-6 py-2 bg-blue-500 rounded-xl hover:bg-blue-600 shadow-lg">
+        Calculate Score
+    </button>
+
+    <!-- Results -->
+    <div id="result" class="mt-6 p-4 bg-gray-800 rounded-xl w-full max-w-xl"></div>
 
     <script>
-        document.getElementById("scoreForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const rolls = [];
-            document.querySelectorAll("#frames input").forEach(inp => {
-                if (inp.value !== "") rolls.push(parseInt(inp.value, 10));
+        const form = document.getElementById("scoreForm");
+
+        // Create 10 frames
+        for (let i = 1; i <= 10; i++) {
+            const frame = document.createElement("div");
+            frame.className = "flex flex-col items-center bg-gray-700 p-2 rounded-lg";
+
+            const label = document.createElement("span");
+            label.textContent = `F${i}`;
+            label.className = "text-sm mb-1";
+
+            const input1 = document.createElement("input");
+            input1.type = "number";
+            input1.min = 0;
+            input1.max = 10;
+            input1.className = "w-12 p-1 mb-1 text-black text-center rounded";
+
+            const input2 = document.createElement("input");
+            input2.type = "number";
+            input2.min = 0;
+            input2.max = 10;
+            input2.className = "w-12 p-1 mb-1 text-black text-center rounded";
+
+            const input3 = document.createElement("input");
+            input3.type = "number";
+            input3.min = 0;
+            input3.max = 10;
+            input3.className = "w-12 p-1 text-black text-center rounded hidden";
+
+            // Auto-disable 2nd input if strike (for frames 1-9)
+            input1.addEventListener("input", () => {
+                const val = parseInt(input1.value) || 0;
+                if (i < 10) {
+                    if (val === 10) {
+                        input2.value = "";
+                        input2.disabled = true;
+                    } else {
+                        input2.disabled = false;
+                    }
+                }
+                // In 10th frame, show third box when strike/spare
+                if (i === 10) {
+                    input2.classList.remove("hidden");
+                    if (val === 10) {
+                        input2.disabled = false;
+                        input3.classList.remove("hidden");
+                    }
+                }
             });
 
-            const res = await fetch("/score", {
+            // In 10th frame, if spare → allow third box
+            input2.addEventListener("input", () => {
+                if (i === 10) {
+                    const r1 = parseInt(input1.value) || 0;
+                    const r2 = parseInt(input2.value) || 0;
+                    if (r1 !== 10 && r1 + r2 === 10) {
+                        input3.classList.remove("hidden");
+                    }
+                }
+            });
+
+            frame.appendChild(label);
+            frame.appendChild(input1);
+            frame.appendChild(input2);
+            frame.appendChild(input3);
+            form.appendChild(frame);
+        }
+
+        document.getElementById("calculateBtn").addEventListener("click", async () => {
+            const rolls = [];
+            const frames = form.querySelectorAll("div");
+
+            frames.forEach((f, idx) => {
+                const inputs = f.querySelectorAll("input");
+                inputs.forEach(inp => {
+                    if (!inp.classList.contains("hidden") && inp.value !== "") {
+                        rolls.push(parseInt(inp.value));
+                    }
+                });
+            });
+
+            const response = await fetch("/score", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ rolls })
             });
-            const data = await res.json();
-            const out = document.getElementById("result");
-            out.textContent = data.error ? `Error: ${data.error}` : `Total Score: ${data.total}`;
+            const data = await response.json();
+
+            const resultDiv = document.getElementById("result");
+            if (data.error) {
+                resultDiv.innerHTML = `<p class="text-red-400 font-bold">❌ ${data.error}</p>`;
+            } else {
+                let html = `<h2 class="text-xl font-bold mb-2">✅ Total Score: ${data.total}</h2>`;
+                html += `<ul class="text-sm">`;
+                data.frames.forEach(f => {
+                    html += `<li>Frame ${f.frame}: [${f.rolls.join(", ")}] → ${f.score}</li>`;
+                });
+                html += `</ul>`;
+                resultDiv.innerHTML = html;
+            }
         });
     </script>
 </body>
+
+</html>
