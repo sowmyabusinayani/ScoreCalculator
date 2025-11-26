@@ -1,17 +1,28 @@
 @Summary...........
 
-# 🎳 Bowling Score Calculator
+# Bowling Score Calculator
 
-A simple web application to calculate bowling scores.  
-Built with **Flask (Python)** for the backend and **HTML/JavaScript** for the frontend.
+A web-based bowling score calculator built using **Python (Flask)** for the backend
+and **HTML + JavaScript** for the frontend.
+
+This project demonstrates how to implement business logic, handle user input,
+and connect frontend interaction with backend processing in a web application.
+---
+
+##  Features
+- Input scores for all 10 frames of a bowling game  
+- Handles strikes, spares, and open frames based on official bowling rules  
+- Automatically calculates final score  
+- User-friendly web interface  
+- Lightweight Flask-based backend  
 
 ---
 
-## 🚀 Features
-- Input bowling scores frame by frame (10 frames).
-- Handles strikes, spares, and open frames.
-- Calculates the total score based on official bowling rules.
-- Simple and lightweight Flask app.
+## Tech Stack
+
+- **Backend:** Python (Flask)  
+- **Frontend:** HTML, JavaScript  
+- **Tools:** Git, GitHub
 
 ---
 
@@ -56,26 +67,29 @@ python app.py
 
 http://127.0.0.1:5000
 
-🔮 Future Enhancements
+## What This Project Demonstrates
 
-🎨 Add CSS styling for a better UI.
+- Implementing real-world logic (bowling rules) in code
+- Handling front-end user input in a structured way
+- Building a simple web application using Flask
+- Connecting UI events with backend computation
+- Organizing a mini full-stack project
 
-🖱 Auto-disable second input on strikes.
+## Future Enhancements
 
-📊 Show per-frame scores as well as total.
+- Add CSS styling for a better UI.
 
-💾 Save games in a database (SQLite/Postgres).
+- Auto-disable second input on strikes.
 
-🌍 Deploy to Heroku/Render for public access.
+- Display individual frame scores.
 
-🛠 Tech Stack
+- Save games in a database (SQLite/Postgres).
 
-Backend: Python (Flask)
+- Deploy to Heroku/Render for public access.
 
-Frontend: HTML, JavaScript
 
-🤝 Contributing
+## Contributing
 Pull requests are welcome. For major changes, open an issue first to discuss.
 
-📜 License
+## License
 MIT © 2025 Sowmya Businayani
